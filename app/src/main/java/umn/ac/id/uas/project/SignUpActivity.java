@@ -2,12 +2,16 @@ package umn.ac.id.uas.project;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.os.Bundle;
 import android.text.TextPaint;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.android.material.button.MaterialButton;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -38,5 +42,12 @@ public class SignUpActivity extends AppCompatActivity {
                         Color.parseColor("#753A88"),
                 }, null, Shader.TileMode.CLAMP);
         title2.getPaint().setShader(textShader);
+
+        ImageView signUpButton = findViewById(R.id.sign_up_button);
+
+        signUpButton.setOnClickListener(v -> {
+            Intent intent = new Intent(SignUpActivity.this, SignInActivity.class);
+            startActivity(intent);
+        });
     }
 }
