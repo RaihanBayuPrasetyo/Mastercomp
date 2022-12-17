@@ -15,6 +15,7 @@ import java.io.IOException;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import umn.ac.id.uas.project.global.SharedPreference;
 import umn.ac.id.uas.project.model.AuthenticationController;
 import umn.ac.id.uas.project.retrofit.ApiErrorHandler;
 import umn.ac.id.uas.project.retrofit.ApiService;
@@ -31,6 +32,11 @@ public class SignInActivity extends AppCompatActivity {
         EditText email = findViewById(R.id.input_email);
         EditText password = findViewById(R.id.input_password);
 
+        if(SharedPreference.getToken(this) != null) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        }
+
         signInButton.setOnClickListener(v -> {
             String textEmail = email.getText().toString();
             String textPassword = password.getText().toString();
@@ -40,10 +46,14 @@ public class SignInActivity extends AppCompatActivity {
                 public void onResponse(Call<AuthenticationController> call, Response<AuthenticationController> response) {
                     if(response.isSuccessful()) {
                         AuthenticationController.Result result = response.body().login();
+                        Log.i("Result", result.toString());
 
                         if(result.getMessage().equalsIgnoreCase("Login Success")) {
+                            SharedPreference.setUser(getApplicationContext(), result.getUser());
+                            SharedPreference.setToken(getApplicationContext(), result.getToken());
                             Toast.makeText(SignInActivity.this, "Login Success, welcome " + result.getUser().getName(), Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            finish();
                         }
                     } else {
                         try {

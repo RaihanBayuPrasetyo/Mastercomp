@@ -22,6 +22,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import umn.ac.id.uas.project.model.AuthenticationController;
+import umn.ac.id.uas.project.retrofit.ApiErrorHandler;
 import umn.ac.id.uas.project.retrofit.ApiService;
 
 public class SignUpActivity extends AppCompatActivity {
@@ -57,11 +58,12 @@ public class SignUpActivity extends AppCompatActivity {
         ImageView signUpButton = findViewById(R.id.sign_up_button);
 
         signUpButton.setOnClickListener(v -> {
-            EditText name, email, password;
+            EditText name, email, password, phoneNumber;
             name = findViewById(R.id.input_name);
             email = findViewById(R.id.input_email);
             password = findViewById(R.id.input_password);
-            ApiService.endpoint().registerUser(name.getText().toString(), email.getText().toString(), password.getText().toString()).enqueue(new Callback<AuthenticationController>() {
+            phoneNumber = findViewById(R.id.input_phone_number);
+            ApiService.endpoint().registerUser(name.getText().toString(), email.getText().toString(), password.getText().toString(), phoneNumber.getText().toString()).enqueue(new Callback<AuthenticationController>() {
                 @Override
                 public void onResponse(Call<AuthenticationController> call, Response<AuthenticationController> response) {
                     if(response.isSuccessful()) {
@@ -74,7 +76,7 @@ public class SignUpActivity extends AppCompatActivity {
                         }
                     } else {
                         try {
-                            Toast.makeText(SignUpActivity.this, response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignUpActivity.this, ApiErrorHandler.getErrorMessage(response.errorBody().string()), Toast.LENGTH_SHORT).show();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

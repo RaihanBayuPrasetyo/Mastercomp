@@ -1,16 +1,27 @@
 package umn.ac.id.uas.project.model;
 
-public class ComputerPackage {
-    private String title, description, ranking;
-    private int image;
-    private double price;
+import java.io.Serializable;
+import java.util.ArrayList;
 
-    public ComputerPackage(String title, double price, String description, int image, String ranking) {
-        this.title = title;
-        this.description = description;
-        this.ranking = ranking;
-        this.image = image;
-        this.price = price;
+public class ComputerPackage implements Serializable {
+    private String title, description, ranking, image_path;
+    private double price;
+    private ArrayList<ComputerPackage> computers;
+
+//    public ComputerPackage(String title, double price, String description, int image, String ranking) {
+//        this.title = title;
+//        this.description = description;
+//        this.ranking = ranking;
+//        this.image = image;
+//        this.price = price;
+//    }
+
+    public ArrayList<ComputerPackage> getTopSpecificationComputers() {
+        return computers;
+    }
+
+    public ArrayList<ComputerPackage> getAllComputers() {
+        return computers;
     }
 
     public String getRanking() {
@@ -29,7 +40,7 @@ public class ComputerPackage {
         return description;
     }
 
-    public int getImage() {
-        return image;
+    public String getImage_path() {
+        return image_path;
     }
 }

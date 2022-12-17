@@ -52,15 +52,16 @@
             android:layout_marginTop="20dp"
             app:layout_constraintTop_toBottomOf="@id/pc_name"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="300dp"
             android:elevation="10dp"
             app:cardCornerRadius="20dp">
+
             <ImageView
                 android:id="@+id/pc_image_resource"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@drawable/zeus_300_x_computer"
-                android:scaleType="centerCrop"/>
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/zeus_300_x_computer" />
         </androidx.cardview.widget.CardView>
 
 
@@ -72,43 +73,11 @@
             android:layout_marginTop="20dp">
             <TextView
                 android:textColor="@color/black"
-                android:id="@+id/processor_text"
+                android:id="@+id/description"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Processor : "/>
-
-            <TextView
-                android:textColor="@color/black"
-                android:id="@+id/motherboard_text"
-                app:layout_constraintTop_toBottomOf="@+id/processor_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Motherboard : "/>
-
-            <TextView
-                android:textColor="@color/black"
-                android:id="@+id/cpu_cooler_text"
-                app:layout_constraintTop_toBottomOf="@+id/motherboard_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="CPU Cooler : "/>
-
-            <TextView
-                android:textColor="@color/black"
-                android:id="@+id/ram_text"
-                app:layout_constraintTop_toBottomOf="@+id/cpu_cooler_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="RAM : "/>
-
-            <TextView
-                android:textColor="@color/black"
-                android:id="@+id/graphic_card"
-                app:layout_constraintTop_toBottomOf="@+id/ram_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Graphic Card : "/>
+                android:text="Description : "/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.appcompat.widget.LinearLayoutCompat

@@ -38,8 +38,9 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             "name" => "string|required",
-            "email" => "string|required",
+            "email" => "string|required|unique:users",
             "password" => "string|required",
+            "phone_number" => "string|required",
         ]);
 
         $validated['password'] = bcrypt($validated['password']);

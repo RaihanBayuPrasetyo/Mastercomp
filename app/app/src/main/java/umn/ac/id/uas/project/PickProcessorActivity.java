@@ -4,14 +4,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import umn.ac.id.uas.project.model.ProcessorIntelModel;
+import umn.ac.id.uas.project.retrofit.ApiErrorHandler;
+import umn.ac.id.uas.project.retrofit.ApiService;
 
 public class PickProcessorActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     String[] processors;
@@ -21,6 +29,10 @@ public class PickProcessorActivity extends AppCompatActivity implements AdapterV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pick_processor);
+
+        findViewById(R.id.back_button).setOnClickListener(v -> {
+            finish();
+        });
 
         processors = new String[]{
                 "Pilih Brand Processor",
@@ -44,28 +56,74 @@ public class PickProcessorActivity extends AppCompatActivity implements AdapterV
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
         switch(processors[position]) {
             case "Intel" :
-                ArrayList<ProcessorIntelModel> intelI9 = new ArrayList<ProcessorIntelModel>();
-                ArrayList<ProcessorIntelModel> intelI7 = new ArrayList<ProcessorIntelModel>();
+                ApiService.endpoint().getProcessors().enqueue(new Callback<ProcessorIntelModel>() {
+                    @Override
+                    public void onResponse(Call<ProcessorIntelModel> call, Response<ProcessorIntelModel> response) {
+                        if(response.isSuccessful()) {
+                            ArrayList<ProcessorIntelModel> processors = response.body().getProcessors();
 
-                intelI9.add(new ProcessorIntelModel(R.drawable.processor_icon, "Intel Core i9-13900K 3.0GHz Up To 5.8GHz - Cache 36MB [Box] Socket LGA 1700 - Raptor Lake Series"));
-                intelI9.add(new ProcessorIntelModel(R.drawable.processor_icon, "Intel Core i9-13900K 3.0GHz Up To 5.8GHz - Cache 36MB [Box] Socket LGA 1700 - Raptor Lake Series"));
+                            ArrayList<ProcessorIntelModel> intelI9 = null;
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                                intelI9 = (ArrayList<ProcessorIntelModel>) processors.stream().filter(processor -> processor.getGeneration().contains("i9") && processor.getType().equalsIgnoreCase("intel")).collect(Collectors.toList());
+                            }
 
-                intelI7.add(new ProcessorIntelModel(R.drawable.processor_icon, "Intel Core i7-13700K 3.4GHz Up To 5.4GHz - Cache 30MB [Box] Socket LGA 1700 - Raptor Lake Series"));
-                intelI7.add(new ProcessorIntelModel(R.drawable.processor_icon, "Intel Core i7-13700K 3.4GHz Up To 5.4GHz - Cache 30MB [Box] Socket LGA 1700 - Raptor Lake Series"));
+                            ArrayList<ProcessorIntelModel> intelI7 = null;
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                                intelI7 = (ArrayList<ProcessorIntelModel>) processors.stream().filter(processor -> processor.getGeneration().contains("i7") && processor.getType().equalsIgnoreCase("intel")).collect(Collectors.toList());
+                            }
 
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProcessorRecyclerViewFragment(this, intelI9, intelI7)).commit();
+                            Log.i("Status", "Successfully fetched processors");
+
+                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProcessorRecyclerViewFragment(getApplicationContext(), intelI9, intelI7)).commit();
+                        } else {
+                            try {
+                                Toast.makeText(PickProcessorActivity.this, ApiErrorHandler.getErrorMessage(response.errorBody().string()), Toast.LENGTH_SHORT).show();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ProcessorIntelModel> call, Throwable t) {
+                        Toast.makeText(PickProcessorActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
                 break;
             case "AMD" :
-                ArrayList<ProcessorIntelModel> amd5 = new ArrayList<ProcessorIntelModel>();
-                ArrayList<ProcessorIntelModel> amd4 = new ArrayList<ProcessorIntelModel>();
+                ApiService.endpoint().getProcessors().enqueue(new Callback<ProcessorIntelModel>() {
+                    @Override
+                    public void onResponse(Call<ProcessorIntelModel> call, Response<ProcessorIntelModel> response) {
+                        if(response.isSuccessful()) {
+                            ArrayList<ProcessorIntelModel> processors = response.body().getProcessors();
 
-                amd5.add(new ProcessorIntelModel(R.drawable.amd_icon, "AMD Ryzen 9 7950X 4.5Ghz Up To 5.7Ghz Cache 64MB 170W AM5 [Box] - 16 Core - 100-100000514WOF"));
-                amd5.add(new ProcessorIntelModel(R.drawable.amd_icon, "AMD Ryzen 9 7900X 4.7Ghz Up To 5.6Ghz Cache 64MB 170W AM5 [Box] - 12 Core - 100-100000589WOF"));
+                            ArrayList<ProcessorIntelModel> amd4 = null;
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                                amd4 = (ArrayList<ProcessorIntelModel>) processors.stream().filter(processor -> processor.getType().equalsIgnoreCase("amd")).collect(Collectors.toList());
+                            }
 
-                amd4.add(new ProcessorIntelModel(R.drawable.amd_icon, "AMD Ryzen 9 5950X 3.4Ghz Up To 4.9Ghz Cache 64MB 105W AM4 [Box] - 16 Core - 100-100000059WOF (Garansi Lokal/AMD"));
-                amd4.add(new ProcessorIntelModel(R.drawable.amd_icon, "AMD Ryzen 9 5900X 3.7Ghz Up To 4.8Ghz Cache 64MB 105W AM4 [Box] - 12 Core - 100-100000061WOF (Garansi AMD Global/AMD"));
+                            ArrayList<ProcessorIntelModel> amd5 = null;
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                                amd5 = (ArrayList<ProcessorIntelModel>) processors.stream().filter(processor -> processor.getType().equalsIgnoreCase("amd")).collect(Collectors.toList());
+                            }
 
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProcessorAmdRecyclerViewFragment(getApplicationContext(), amd4, amd5)).commit();
+                            Log.i("Status", "Successfully fetched processors");
+
+                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProcessorAmdRecyclerViewFragment(getApplicationContext(), amd4, amd5)).commit();
+                        } else {
+                            try {
+                                Toast.makeText(PickProcessorActivity.this, ApiErrorHandler.getErrorMessage(response.errorBody().string()), Toast.LENGTH_SHORT).show();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ProcessorIntelModel> call, Throwable t) {
+                        Toast.makeText(PickProcessorActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
                 break;
             default:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new Fragment()).commit();
