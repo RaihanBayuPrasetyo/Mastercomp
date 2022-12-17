@@ -65,6 +65,11 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, PackageActivity.class));
         });
 
+        ConstraintLayout product = findViewById(R.id.product);
+        product.setOnClickListener(v -> {
+            startActivity(new Intent(this, ProductActivity.class));
+        });
+
         ApiService.endpoint().getTopSpecificationComputers().enqueue(new Callback<ComputerPackage>() {
             @Override
             public void onResponse(Call<ComputerPackage> call, Response<ComputerPackage> response) {

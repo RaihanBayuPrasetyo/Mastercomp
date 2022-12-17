@@ -136,6 +136,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/product"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
@@ -225,7 +226,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/explore"
             tools:layout_editor_absoluteX="0dp"
-            tools:listitem="@layout/processor_row"
+            tools:listitem="@layout/top_specification_row"
             tools:itemCount="2"/>
 
 <!--        <androidx.appcompat.widget.LinearLayoutCompat-->
