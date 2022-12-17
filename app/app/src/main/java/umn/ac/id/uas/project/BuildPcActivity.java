@@ -80,11 +80,17 @@ public class BuildPcActivity extends AppCompatActivity {
     }
 
     private void getUserPackage() {
+        Log.i("Token", "Bearer " + SharedPreference.getToken(this));
         ApiService.endpoint().getUserPackage("Bearer " + SharedPreference.getToken(this)).enqueue(new Callback<UserModel>() {
             @Override
             public void onResponse(Call<UserModel> call, Response<UserModel> response) {
                 if(response.isSuccessful()) {
                     userPackage = response.body().getUserPackage();
+                    try {
+                        Log.i("user package", userPackage.toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     if(userPackage == null) return;
 
                     lihatRancanganButton.setVisibility(View.VISIBLE);

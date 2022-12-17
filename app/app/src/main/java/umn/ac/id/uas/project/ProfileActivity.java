@@ -40,6 +40,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import umn.ac.id.uas.project.global.SharedPreference;
+import umn.ac.id.uas.project.model.AuthenticationController;
 import umn.ac.id.uas.project.model.UserModel;
 import umn.ac.id.uas.project.retrofit.ApiService;
 
@@ -141,7 +142,7 @@ public class ProfileActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<UserModel> call, Response<UserModel> response) {
                         if (response.isSuccessful()) {
-                            Toast.makeText(ProfileActivity.this, response.body().changeProfilePicture(), Toast.LENGTH_SHORT).show();
+                            updateToken();
                         } else {
                             try {
                                 Toast.makeText(ProfileActivity.this, response.errorBody().string(), Toast.LENGTH_SHORT).show();
@@ -175,7 +176,7 @@ public class ProfileActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<UserModel> call, Response<UserModel> response) {
                             if (response.isSuccessful()) {
-                                Toast.makeText(ProfileActivity.this, response.body().changeProfilePicture(), Toast.LENGTH_SHORT).show();
+                                updateToken();
                             } else {
                                 try {
                                     Toast.makeText(ProfileActivity.this, response.errorBody().string(), Toast.LENGTH_SHORT).show();
@@ -205,6 +206,30 @@ public class ProfileActivity extends AppCompatActivity {
             photoProfile.setImageBitmap(bitmap);
         }
 
+    }
+
+    private void updateToken() {
+        ApiService.endpoint().getUser("Bearer " + SharedPreference.getToken(this)).enqueue(new Callback<AuthenticationController>() {
+            @Override
+            public void onResponse(Call<AuthenticationController> call, Response<AuthenticationController> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(ProfileActivity.this, "Successfully updated profile picture", Toast.LENGTH_SHORT).show();
+                    UserModel user = response.body().getUser();
+                    SharedPreference.setUser(getApplicationContext(), user);
+                } else {
+                    try {
+                        Toast.makeText(ProfileActivity.this, response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AuthenticationController> call, Throwable t) {
+
+            }
+        });
     }
 
     public static byte[] getBytes(InputStream inputStream) throws IOException {

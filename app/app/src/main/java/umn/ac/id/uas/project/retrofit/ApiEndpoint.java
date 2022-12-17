@@ -32,6 +32,10 @@ public interface ApiEndpoint {
     @POST("register/user")
     Call<AuthenticationController> registerUser(@Field("name") String name, @Field("email") String email, @Field("password") String password, @Field("phone_number") String phoneNumber);
 
+    @GET("auth/user")
+    @Headers("Accept: application/json")
+    Call<AuthenticationController> getUser(@Header("Authorization") String authorization);
+
     @GET("computers")
     @Headers("Accept: application/json")
     Call<ComputerPackage> getAllComputers();

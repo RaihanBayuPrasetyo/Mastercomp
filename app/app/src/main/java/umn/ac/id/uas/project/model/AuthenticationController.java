@@ -12,6 +12,10 @@ public class AuthenticationController {
         return message;
     }
 
+    public UserModel getUser() {
+        return user;
+    }
+
     public class Result {
         private String message, token;
         private UserModel user;
