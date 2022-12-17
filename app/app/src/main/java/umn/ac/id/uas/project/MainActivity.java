@@ -14,6 +14,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -28,6 +32,16 @@ import umn.ac.id.uas.project.model.UserModel;
 import umn.ac.id.uas.project.retrofit.ApiService;
 
 public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        ImageView photoProfile = findViewById(R.id.profile_icon);
+        String photoProfilePath = ApiService.getBaseUrl() + SharedPreference.getUser(this).getPhoto_profile_path();
+        Log.i("Profile photo path", photoProfilePath);
+        Picasso.get().load(photoProfilePath).memoryPolicy(MemoryPolicy.NO_CACHE).networkPolicy(NetworkPolicy.NO_CACHE).placeholder(R.drawable.profile_alexis_sanchez).error(R.drawable.profile_alexis_sanchez).into(photoProfile);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
